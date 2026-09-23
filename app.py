@@ -100,7 +100,7 @@ I18N = {
         "mode_live": "LIVE SEARCH",
         "mode_demo": "DEMO SEARCH",
         "ops_title": "02 E-commerce Planning & Operations",
-        "ops_sub": "把市场机会转成可上架、可追踪的商品运营包；Listing 可以生成，事实不能猜。",
+        "ops_sub": "从商品资料到本地化上架与启动清单，把市场机会转成可执行的电商运营方案。",
         "merchant_id": "Merchant ID *",
         "product_id": "Product ID *",
         "sku": "SKU *",
@@ -119,7 +119,7 @@ I18N = {
         "ops_language_note": "面向巴西消费者的 Listing 默认以巴西葡萄牙语生成，这是当前 Operations 工具的业务设定。",
         "download_launch": "下载 Launch Pack (.md)",
         "marketing_title": "03 Marketing / Creator / Content",
-        "marketing_sub": "真实 Creator 数据 → Python 规则评分 → AI 解释 fit。没有真实数据，不编造达人。",
+        "marketing_sub": "整合 Creator 数据、筛选逻辑与 AI 分析，形成更清晰的达人选择和内容执行方案。",
         "campaign_id": "Campaign ID *",
         "product_sku": "Product / SKU *",
         "campaign_objective": "Campaign Objective *",
@@ -138,7 +138,7 @@ I18N = {
         "download_creator_template": "下载 Creator CSV 模板",
         "download_creator_analysis": "下载 Creator Analysis (.md)",
         "finance_title": "04 Financial & Performance Intelligence",
-        "finance_sub": "先检查数据，再计算，再解释。没有真实数据，不生成假的 Profitability。",
+        "finance_sub": "把经营数据转成利润、效率和营销表现洞察，帮助定位业务驱动因素与下一步动作。",
         "upload_finance": "上传 Finance CSV / XLSX / JSON *",
         "finance_empty": "Profitability = Incomplete。请先上传经营数据。",
         "run_finance": "Run Financial Analysis",
@@ -432,6 +432,99 @@ AI_LANGUAGE_INSTRUCTION = {
     "zh": "Respond in clear Simplified Chinese. Keep standard business/technical English terms where useful.",
     "en": "Respond in concise professional English.",
     "pt-BR": "Respond in natural Brazilian Portuguese (pt-BR), not European Portuguese.",
+}
+
+MARKET_UI = {
+    "zh": {
+        "eyebrow": "市场与产品情报",
+        "title": "把一个产品想法，变成有证据的市场判断",
+        "subtitle": "输入产品和目标市场。系统会检索公开信息、交叉整理关键证据，并生成结构化市场研究报告。即使问题很简单，也会按完整研究框架展开。",
+        "feature_1": "实时公开信息检索",
+        "feature_2": "基于来源的客观分析",
+        "feature_3": "中文 / English / Português 输出",
+        "market": "目标市场 *",
+        "market_help": "可输入任意国家或区域，例如 Brazil、Mexico、Southeast Asia。",
+        "product": "产品 / 类目 *",
+        "product_ph": "例如：猫爬架、家用咖啡机、美妆工具",
+        "question": "你最想回答的问题（选填）",
+        "question_ph": "例如：猫爬架在巴西好卖吗？如果留空，系统会自动做完整的市场进入评估。",
+        "advanced": "高级研究设置",
+        "platform": "重点平台（选填）",
+        "price": "预期售价区间（选填）",
+        "dimensions": "重点研究维度",
+        "run": "生成市场研究报告",
+        "spinner": "正在规划研究 → 检索公开信息 → 整理证据 → 生成报告…",
+        "default_objective": "评估该产品在目标市场的商业机会，包括市场需求、增长信号、消费者、竞争格局、价格带、渠道、监管与主要进入风险，并给出客观的下一步验证建议。",
+        "report": "市场研究报告",
+        "report_sub": "基于本次检索到的公开证据生成。关键事实应以来源为准，证据不足处应明确说明。",
+        "sources": "来源与证据",
+        "sources_sub": "这里保留报告使用的原始检索证据，便于核查；正常阅读报告时无需展开。",
+        "download": "下载报告 (.md)",
+        "evidence": "已纳入证据",
+        "live": "实时研究",
+        "demo": "演示研究",
+        "need_product": "请输入产品 / 类目。",
+    },
+    "en": {
+        "eyebrow": "MARKET & PRODUCT INTELLIGENCE",
+        "title": "Turn a product idea into an evidence-backed market view",
+        "subtitle": "Enter a product and target market. The system retrieves public information, structures the evidence and produces a market research report. A simple question is expanded into a complete research framework.",
+        "feature_1": "Live public-web research",
+        "feature_2": "Evidence-backed analysis",
+        "feature_3": "Chinese / English / Portuguese output",
+        "market": "Target market *",
+        "market_help": "Enter any country or region, e.g. Brazil, Mexico or Southeast Asia.",
+        "product": "Product / category *",
+        "product_ph": "Example: cat tree, home espresso maker, beauty tools",
+        "question": "Key business question (optional)",
+        "question_ph": "Example: Are cat trees attractive in Brazil? Leave blank for a full market-entry assessment.",
+        "advanced": "Advanced research settings",
+        "platform": "Priority platform (optional)",
+        "price": "Expected price range (optional)",
+        "dimensions": "Priority research dimensions",
+        "run": "Generate market research report",
+        "spinner": "Planning research → retrieving public information → structuring evidence → generating report…",
+        "default_objective": "Assess the commercial opportunity for this product in the target market, including demand and growth signals, consumers, competition, price bands, channels, regulation and major entry risks, with objective next-step validation priorities.",
+        "report": "Market research report",
+        "report_sub": "Generated from public evidence retrieved for this run. Key facts should remain source-backed and evidence gaps should be stated explicitly.",
+        "sources": "Sources & evidence",
+        "sources_sub": "Raw evidence used by the report is retained here for verification; most users do not need to expand it during normal reading.",
+        "download": "Download report (.md)",
+        "evidence": "Evidence items",
+        "live": "Live research",
+        "demo": "Demo research",
+        "need_product": "Please enter a product / category.",
+    },
+    "pt-BR": {
+        "eyebrow": "INTELIGÊNCIA DE MERCADO E PRODUTO",
+        "title": "Transforme uma ideia de produto em uma visão de mercado baseada em evidências",
+        "subtitle": "Informe o produto e o mercado-alvo. O sistema pesquisa informações públicas, organiza as evidências e produz um relatório de mercado estruturado. Mesmo uma pergunta simples é ampliada para um framework completo de pesquisa.",
+        "feature_1": "Pesquisa pública em tempo real",
+        "feature_2": "Análise baseada em evidências",
+        "feature_3": "Saída em chinês / inglês / português",
+        "market": "Mercado-alvo *",
+        "market_help": "Informe qualquer país ou região, por exemplo Brasil, México ou Sudeste Asiático.",
+        "product": "Produto / categoria *",
+        "product_ph": "Ex.: árvore para gatos, cafeteira doméstica, acessórios de beleza",
+        "question": "Pergunta principal de negócio (opcional)",
+        "question_ph": "Ex.: Vale a pena vender árvores para gatos no Brasil? Deixe em branco para uma avaliação completa de entrada no mercado.",
+        "advanced": "Configurações avançadas da pesquisa",
+        "platform": "Plataforma prioritária (opcional)",
+        "price": "Faixa de preço esperada (opcional)",
+        "dimensions": "Dimensões prioritárias da pesquisa",
+        "run": "Gerar relatório de pesquisa de mercado",
+        "spinner": "Planejando pesquisa → buscando informações públicas → estruturando evidências → gerando relatório…",
+        "default_objective": "Avaliar a oportunidade comercial do produto no mercado-alvo, incluindo sinais de demanda e crescimento, consumidores, concorrência, faixas de preço, canais, regulamentação e principais riscos de entrada, com prioridades objetivas para validação.",
+        "report": "Relatório de pesquisa de mercado",
+        "report_sub": "Gerado a partir das evidências públicas recuperadas nesta execução. Fatos importantes devem permanecer sustentados por fontes e lacunas de evidência devem ser explicitadas.",
+        "sources": "Fontes e evidências",
+        "sources_sub": "As evidências brutas usadas no relatório ficam aqui para verificação; na leitura normal, não é necessário expandir esta seção.",
+        "download": "Baixar relatório (.md)",
+        "evidence": "Itens de evidência",
+        "live": "Pesquisa ao vivo",
+        "demo": "Pesquisa demo",
+        "need_product": "Informe um produto / categoria.",
+    },
 }
 
 DIMENSIONS = [
@@ -749,6 +842,79 @@ div[data-testid="stButton"] > button:not([kind="primary"]) {
 
 hr { border-color: rgba(255,255,255,.08) !important; }
 
+.bcos-market-hero {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F7FAFE 100%);
+    border: 1px solid #E1E7F0;
+    border-radius: 22px;
+    padding: 28px 30px 24px 30px;
+    margin: 2px 0 20px 0;
+    box-shadow: 0 12px 34px rgba(15, 35, 67, .055);
+}
+.bcos-market-hero .title {
+    font-size: 1.78rem;
+    font-weight: 770;
+    color: #172033;
+    letter-spacing: -.03em;
+    line-height: 1.18;
+    margin: 2px 0 10px 0;
+}
+.bcos-market-hero .desc {
+    color: #667085;
+    line-height: 1.7;
+    max-width: 960px;
+    font-size: .96rem;
+}
+.bcos-feature-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 17px;
+}
+.bcos-feature-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    border: 1px solid #DDE5EF;
+    border-radius: 999px;
+    background: #FFFFFF;
+    color: #475467;
+    font-size: .77rem;
+    font-weight: 650;
+}
+.bcos-feature-pill:before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #159A6A;
+}
+.bcos-report-shell {
+    background: #FFFFFF;
+    border: 1px solid #E1E7F0;
+    border-radius: 20px;
+    padding: 26px 28px;
+    margin-top: 22px;
+    box-shadow: 0 10px 28px rgba(15, 35, 67, .045);
+}
+.bcos-report-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 8px 0 2px 0;
+}
+.bcos-meta-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 6px 10px;
+    background: #F2F4F7;
+    color: #475467;
+    font-size: .74rem;
+    font-weight: 650;
+}
+
 @media (max-width: 900px) {
     .bcos-grid { grid-template-columns: 1fr; }
     .bcos-hero { padding: 26px 24px; }
@@ -954,7 +1120,6 @@ if module == "command":
     )
 
     section_header("COMMAND CENTER", t["home_title"], t["home_subtitle"])
-    module_cards()
 
     q = st.text_area(
         t["goal_label"],
@@ -1014,109 +1179,153 @@ if module == "command":
 # 01 Market Intelligence
 # =========================================================
 elif module == "market":
-    section_header("01 · MARKET INTELLIGENCE", t["market_title"], t["market_sub"])
+    mu = MARKET_UI[lang_code]
 
-    with st.expander(t["rules"], expanded=False):
-        st.markdown(
-            f"- {t['source_priority']}\n"
-            f"- {t['market_rule_1']}\n"
-            f"- {t['market_rule_2']}"
-        )
-
-    c1, c2 = st.columns(2)
-    with c1:
-        country = st.selectbox(t["country"], ["Brazil", "Mexico", "Chile"], key="market_country")
-        product = st.text_input(t["product"], placeholder=t["product_ph"], key="market_product")
-    with c2:
-        platform = st.selectbox(
-            t["platform_optional"],
-            ["", "Mercado Livre", "TikTok Shop", "Amazon BR", "Shopee BR"],
-            key="market_platform",
-        )
-        price = st.text_input(t["price_optional"], placeholder=t["price_ph"], key="market_price")
-
-    objective = st.text_area(
-        t["research_objective"],
-        placeholder=t["research_objective_ph"],
-        height=110,
-        key="market_objective",
+    st.markdown(
+        f"""
+        <div class="bcos-market-hero">
+            <div class="bcos-eyebrow">{escape(mu['eyebrow'])}</div>
+            <div class="title">{escape(mu['title'])}</div>
+            <div class="desc">{escape(mu['subtitle'])}</div>
+            <div class="bcos-feature-row">
+                <span class="bcos-feature-pill">{escape(mu['feature_1'])}</span>
+                <span class="bcos-feature-pill">{escape(mu['feature_2'])}</span>
+                <span class="bcos-feature-pill">{escape(mu['feature_3'])}</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
-    dims = st.multiselect(
-        t["research_dims"],
-        DIMENSIONS,
-        default=DIMENSIONS[:6],
-        format_func=lambda x: DIMENSION_LABELS[lang_code][x],
-        key="market_dimensions",
-    )
-
-    if st.button(t["run_market"], type="primary", key="run_market_btn"):
-        if not product.strip() or not objective.strip() or not dims:
-            st.error(t["required"])
-        else:
-            objective_for_agent = (
-                f"{objective.strip()}\n\n"
-                f"OUTPUT LANGUAGE REQUIREMENT: {ai_lang_instruction()}\n"
-                "Do not translate source names or URLs."
+    with st.container(border=True):
+        c1, c2 = st.columns([1, 1.35])
+        with c1:
+            country = st.text_input(
+                mu["market"],
+                value=st.session_state.get("market_country_value", "Brazil"),
+                help=mu["market_help"],
+                key="market_country",
             )
-            if price.strip():
-                objective_for_agent += f"\nUSER-PROVIDED EXPECTED PRICE RANGE: {price.strip()}"
+        with c2:
+            product = st.text_input(
+                mu["product"],
+                placeholder=mu["product_ph"],
+                key="market_product",
+            )
 
-            with st.spinner(t["researching"]):
-                result = run_market_research(
-                    country,
-                    product.strip(),
-                    objective_for_agent,
-                    platform,
-                    dims,
+        objective = st.text_area(
+            mu["question"],
+            placeholder=mu["question_ph"],
+            height=96,
+            key="market_objective",
+        )
+
+        with st.expander(mu["advanced"], expanded=False):
+            c1, c2 = st.columns(2)
+            with c1:
+                platform = st.selectbox(
+                    mu["platform"],
+                    ["", "Mercado Livre", "TikTok Shop", "Amazon", "Shopee", "Other / Multiple"],
+                    key="market_platform",
                 )
-            st.session_state.market_result = result
-            save_history("Market", product[:80], f"{country} | {result.get('mode', '')}")
+            with c2:
+                price = st.text_input(
+                    mu["price"],
+                    placeholder=t["price_ph"],
+                    key="market_price",
+                )
+
+            dims = st.multiselect(
+                mu["dimensions"],
+                DIMENSIONS,
+                default=DIMENSIONS[:6],
+                format_func=lambda x: DIMENSION_LABELS[lang_code][x],
+                key="market_dimensions",
+            )
+
+        if st.button(mu["run"], type="primary", key="run_market_btn", use_container_width=True):
+            if not product.strip():
+                st.error(mu["need_product"])
+            elif not country.strip():
+                st.error(t["required"])
+            else:
+                selected_dims = dims or DIMENSIONS[:6]
+                base_objective = objective.strip() or mu["default_objective"]
+                objective_for_agent = (
+                    f"{base_objective}\n\n"
+                    f"OUTPUT LANGUAGE REQUIREMENT: {ai_lang_instruction()}\n"
+                    "Do not translate source names or URLs."
+                )
+                if price.strip():
+                    objective_for_agent += f"\nUSER-PROVIDED EXPECTED PRICE RANGE: {price.strip()}"
+
+                with st.spinner(mu["spinner"]):
+                    result = run_market_research(
+                        country.strip(),
+                        product.strip(),
+                        objective_for_agent,
+                        platform,
+                        selected_dims,
+                    )
+                st.session_state.market_result = result
+                st.session_state["market_last_query"] = {
+                    "country": country.strip(),
+                    "product": product.strip(),
+                    "platform": platform,
+                    "objective": base_objective,
+                }
+                save_history("Market", product[:80], f"{country.strip()} | {result.get('mode', '')}")
 
     result = st.session_state.market_result
     if result:
         live = result.get("mode") == "LIVE SEARCH"
         badge_class = "bcos-badge-live" if live else "bcos-badge-demo"
-        badge_text = t["mode_live"] if live else t["mode_demo"]
+        badge_text = mu["live"] if live else mu["demo"]
         evidence = result.get("evidence") or []
+        last_q = st.session_state.get("market_last_query", {})
 
         st.markdown(
             f"""
-            <div class="bcos-result-head">
-                <div class="bcos-section-title">{escape(t['research_memo'])}</div>
-                <span class="{badge_class}">{escape(badge_text)}</span>
+            <div class="bcos-report-shell">
+                <div class="bcos-eyebrow">{escape(mu['report'])}</div>
+                <div class="bcos-section-title">{escape(last_q.get('product', product or 'Market Research'))} · {escape(last_q.get('country', country or ''))}</div>
+                <div class="bcos-section-sub">{escape(mu['report_sub'])}</div>
+                <div class="bcos-report-meta">
+                    <span class="{badge_class}">{escape(badge_text)}</span>
+                    <span class="bcos-meta-chip">{escape(mu['evidence'])}: {len(evidence)}</span>
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
+
         st.markdown(result.get("analysis") or "")
 
         download_markdown(
-            t["download_memo"],
+            mu["download"],
             result.get("analysis") or "",
-            f"market_research_{country}_{product.strip().replace(' ', '_')[:40]}.md",
+            f"market_research_{last_q.get('country', 'market')}_{last_q.get('product', 'product').replace(' ', '_')[:40]}.md",
             "download_market_memo",
         )
 
-        st.markdown(f"### {t['evidence_register']}")
-        st.caption(f"{t['evidence_count']}: {len(evidence)}")
-
-        if evidence:
-            ev = pd.DataFrame(evidence)
-            preferred = ["title", "source_type", "snippet", "link"]
-            cols = [c for c in preferred if c in ev.columns] + [c for c in ev.columns if c not in preferred]
-            ev = ev[cols]
-            column_config = {}
-            if "link" in ev.columns:
-                column_config["link"] = st.column_config.LinkColumn("URL", display_text="Open source")
-            st.dataframe(
-                ev,
-                use_container_width=True,
-                hide_index=True,
-                column_config=column_config,
-            )
-        else:
-            empty_state("No evidence returned.")
+        with st.expander(mu["sources"], expanded=False):
+            st.caption(mu["sources_sub"])
+            if evidence:
+                ev = pd.DataFrame(evidence)
+                preferred = ["title", "source_type", "snippet", "link"]
+                cols = [c for c in preferred if c in ev.columns] + [c for c in ev.columns if c not in preferred]
+                ev = ev[cols]
+                column_config = {}
+                if "link" in ev.columns:
+                    column_config["link"] = st.column_config.LinkColumn("URL", display_text="Open source")
+                st.dataframe(
+                    ev,
+                    use_container_width=True,
+                    hide_index=True,
+                    column_config=column_config,
+                )
+            else:
+                empty_state("No evidence returned.")
 
 
 # =========================================================
@@ -1124,9 +1333,6 @@ elif module == "market":
 # =========================================================
 elif module == "operations":
     section_header("02 · E-COMMERCE OPERATIONS", t["ops_title"], t["ops_sub"])
-
-    with st.expander(t["rules"], expanded=False):
-        st.markdown(f"- {t['ops_rule_1']}\n- {t['ops_rule_2']}")
 
     st.info(t["ops_language_note"])
 
@@ -1203,9 +1409,6 @@ elif module == "operations":
 # =========================================================
 elif module == "marketing":
     section_header("03 · MARKETING / CREATOR", t["marketing_title"], t["marketing_sub"])
-
-    with st.expander(t["rules"], expanded=False):
-        st.markdown(f"- {t['marketing_rule_1']}\n- {t['marketing_rule_2']}")
 
     campaign_id = st.text_input(t["campaign_id"], "CMP-BR-001", key="mkt_campaign_id")
     product = st.text_input(t["product_sku"], placeholder="PRD-PET-01 / SKU-001", key="mkt_product")
@@ -1306,9 +1509,6 @@ elif module == "marketing":
 # =========================================================
 elif module == "finance":
     section_header("04 · FINANCE & PERFORMANCE", t["finance_title"], t["finance_sub"])
-
-    with st.expander(t["rules"], expanded=False):
-        st.markdown(f"- {t['finance_rule_1']}\n- {t['finance_rule_2']}")
 
     finance_file = st.file_uploader(
         t["upload_finance"],
@@ -1421,3 +1621,4 @@ elif module == "audit":
             st.session_state.history = []
             st.success(t["history_cleared"])
             st.rerun()
+
