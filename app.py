@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+import uuid
 from html import escape
 from pathlib import Path
 
@@ -11,7 +12,7 @@ from agent import route_request
 from tools.market import run_market_research
 from tools.report_generator import generate_market_docx, generate_market_pdf
 from tools.operations import run_operations
-from tools.marketing import load_creator_file, score_creators, explain_creator_fit
+from tools.marketing import load_creator_file, score_creators, explain_creator_fit, analyse_creator_dataset
 from tools.finance import load_finance_file, analyse_finance
 from llm import chat
 from config import DEMO_MODE, SERPER_API_KEY
@@ -968,6 +969,13 @@ def save_history(module: str, title: str, detail: str) -> None:
     st.session_state.history = st.session_state.history[:100]
 
 
+def ensure_internal_id(key: str, prefix: str) -> str:
+    """Create a stable per-session tracking ID without asking the user to type it."""
+    if not st.session_state.get(key):
+        st.session_state[key] = f"{prefix}-{uuid.uuid4().hex[:8].upper()}"
+    return st.session_state[key]
+
+
 def section_header(eyebrow: str, title: str, subtitle: str) -> None:
     st.markdown(
         f"""
@@ -1405,10 +1413,11 @@ elif module == "operations":
 
     st.info(t["ops_language_note"])
 
-    a, b, c = st.columns(3)
-    merchant_id = a.text_input(t["merchant_id"], "MER-001", key="ops_merchant_id")
-    product_id = b.text_input(t["product_id"], "PRD-001", key="ops_product_id")
-    sku = c.text_input(t["sku"], "SKU-001", key="ops_sku")
+    # Stable IDs still exist for backend joins, but ordinary users should not
+    # have to create database keys manually.
+    merchant_id = ensure_internal_id("ops_merchant_internal_id", "MER")
+    product_id = ensure_internal_id("ops_product_internal_id", "PRD")
+    sku = ensure_internal_id("ops_sku_internal_id", "SKU")
 
     a, b = st.columns(2)
     product_name = a.text_input(t["product_name"], placeholder=t["product_name_ph"], key="ops_product_name")
@@ -1430,8 +1439,16 @@ elif module == "operations":
     inventory = b.text_input(t["inventory"], placeholder="500", key="ops_inventory")
     unit_cost = c.text_input(t["unit_cost"], placeholder="85", key="ops_unit_cost")
 
+    with st.expander({"zh": "内部追踪信息", "en": "Internal tracking", "pt-BR": "Rastreamento interno"}[lang_code], expanded=False):
+        st.caption({
+            "zh": "这些 ID 由系统自动生成，用于后续把 Operations、Marketing 和 Finance 数据关联起来；普通用户不需要手动填写。",
+            "en": "These IDs are generated automatically for cross-module attribution. Users do not need to type them.",
+            "pt-BR": "Esses IDs são gerados automaticamente para conectar os módulos. O usuário não precisa digitá-los.",
+        }[lang_code])
+        st.code(f"merchant_id={merchant_id}\nproduct_id={product_id}\nsku={sku}")
+
     if st.button(t["generate_launch"], type="primary", key="generate_launch_btn"):
-        required = [merchant_id, product_id, sku, product_name, platform, approved_facts]
+        required = [product_name, platform, approved_facts]
         if not all(str(x).strip() for x in required):
             st.error(t["required"])
         else:
@@ -1446,9 +1463,9 @@ elif module == "operations":
 
             with st.spinner(t["generating_launch"]):
                 result = run_operations(
-                    merchant_id.strip(),
-                    product_id.strip(),
-                    sku.strip(),
+                    merchant_id,
+                    product_id,
+                    sku,
                     product_name.strip(),
                     platform,
                     facts_for_agent,
@@ -1457,7 +1474,7 @@ elif module == "operations":
                     unit_cost.strip(),
                 )
             st.session_state.ops_result = result
-            save_history("Operations", sku[:80], platform)
+            save_history("Operations", product_name[:80], platform)
 
     result = st.session_state.ops_result
     if result:
@@ -1479,8 +1496,60 @@ elif module == "operations":
 elif module == "marketing":
     section_header("03 · MARKETING / CREATOR", t["marketing_title"], t["marketing_sub"])
 
-    campaign_id = st.text_input(t["campaign_id"], "CMP-BR-001", key="mkt_campaign_id")
-    product = st.text_input(t["product_sku"], placeholder="PRD-PET-01 / SKU-001", key="mkt_product")
+    ui = {
+        "zh": {
+            "product": "产品 / 商品名称 *",
+            "product_ph": "例如：实木高性价比猫爬架",
+            "brief": "已确认的商品 / 品牌信息（选填）",
+            "brief_ph": "只填真实已确认的信息，例如材料、尺寸、卖点、禁用 claims。没有也可以先留空。",
+            "pool": "Creator 数据概览",
+            "creators": "Creator 数量",
+            "primary": "主要数据类别",
+            "fit": "与当前品类匹配度",
+            "matched": "识别到的相关 Creator",
+            "low": "当前 Creator 池与这个商品品类匹配度较低。系统不会为了凑 Top 10 强行推荐不相关达人。",
+            "analyse": "分析 Creator 数据并生成建议",
+            "no_shortlist": "未生成 Creator Shortlist：当前数据不足以支持可靠的品类匹配。",
+            "analysis": "Creator & Campaign Analysis",
+            "tracking": "内部 Campaign ID（系统自动生成）",
+        },
+        "en": {
+            "product": "Product / product name *",
+            "product_ph": "Example: value-for-money solid-wood cat tree",
+            "brief": "Confirmed product / brand facts (optional)",
+            "brief_ph": "Only confirmed facts such as materials, dimensions, selling points and prohibited claims. You may leave this blank initially.",
+            "pool": "Creator dataset overview",
+            "creators": "Creators",
+            "primary": "Primary dataset niche",
+            "fit": "Category fit",
+            "matched": "Relevant creators detected",
+            "low": "The current creator pool has low relevance to this product category. The system will not force an irrelevant Top 10.",
+            "analyse": "Analyse creator data",
+            "no_shortlist": "No Creator Shortlist generated: the current data does not support a reliable category match.",
+            "analysis": "Creator & Campaign Analysis",
+            "tracking": "Internal Campaign ID (auto-generated)",
+        },
+        "pt-BR": {
+            "product": "Produto / nome do produto *",
+            "product_ph": "Ex.: arranhador de madeira maciça com bom custo-benefício",
+            "brief": "Fatos confirmados do produto / marca (opcional)",
+            "brief_ph": "Informe apenas fatos confirmados, como materiais, dimensões, diferenciais e claims proibidos. Pode deixar em branco inicialmente.",
+            "pool": "Visão geral da base de creators",
+            "creators": "Creators",
+            "primary": "Nicho principal da base",
+            "fit": "Fit com a categoria",
+            "matched": "Creators relevantes detectados",
+            "low": "A base atual tem baixa relevância para esta categoria. O sistema não vai forçar um Top 10 irrelevante.",
+            "analyse": "Analisar base de creators",
+            "no_shortlist": "Nenhuma shortlist foi gerada: os dados atuais não sustentam um match confiável de categoria.",
+            "analysis": "Análise de Creators e Campanha",
+            "tracking": "Campaign ID interno (gerado automaticamente)",
+        },
+    }[lang_code]
+
+    campaign_id = ensure_internal_id("mkt_campaign_internal_id", "CMP")
+
+    product = st.text_input(ui["product"], placeholder=ui["product_ph"], key="mkt_product")
 
     c1, c2, c3 = st.columns(3)
     objective = c1.selectbox(
@@ -1499,9 +1568,9 @@ elif module == "marketing":
     )
 
     approved_brief = st.text_area(
-        t["brand_brief"],
-        placeholder=t["brand_brief_ph"],
-        height=120,
+        ui["brief"],
+        placeholder=ui["brief_ph"],
+        height=110,
         key="mkt_brief",
     )
 
@@ -1510,6 +1579,9 @@ elif module == "marketing":
         type=["csv", "xlsx", "xls"],
         key="creator_file_uploader",
     )
+
+    with st.expander(ui["tracking"], expanded=False):
+        st.code(campaign_id)
 
     if creator_file is None:
         empty_state(t["creator_empty"])
@@ -1521,39 +1593,70 @@ elif module == "marketing":
             creator_df = None
 
         if creator_df is not None:
-            st.caption(f"{t['rows_loaded']}: {len(creator_df):,}")
-            st.dataframe(creator_df.head(20), use_container_width=True, hide_index=True)
+            profile = analyse_creator_dataset(creator_df, category.strip())
+            primary_niche = profile["top_categories"][0]["value"] if profile.get("top_categories") else "—"
+            fit_label = profile.get("fit_level", "NOT_ASSESSED")
 
-            if st.button(t["build_shortlist"], type="primary", key="build_shortlist_btn"):
-                if not product.strip() or not category.strip() or not approved_brief.strip():
+            st.markdown(f"### {ui['pool']}")
+            m1, m2, m3, m4 = st.columns(4)
+            m1.metric(ui["creators"], f"{profile['rows']:,}")
+            m2.metric(ui["primary"], primary_niche)
+            m3.metric(ui["fit"], fit_label.replace("_", " ").title())
+            m4.metric(ui["matched"], f"{profile['matched_count']:,}")
+
+            if category.strip() and not profile["can_shortlist"]:
+                st.warning(ui["low"])
+
+            preview_cols = [
+                c for c in ["display_name", "followers", "category", "platform", "profile_url", "content_focus", "research_status"]
+                if c in creator_df.columns
+            ]
+            preview = creator_df[preview_cols].head(30) if preview_cols else creator_df.head(30)
+            st.dataframe(preview, use_container_width=True, hide_index=True)
+
+            if st.button(ui["analyse"], type="primary", key="build_shortlist_btn"):
+                if not product.strip() or not category.strip():
                     st.error(t["required"])
                 else:
                     ranked = score_creators(creator_df, category.strip(), budget if budget > 0 else None)
+                    profile = ranked.attrs.get("dataset_profile", profile)
                     brief_for_agent = (
-                        approved_brief.strip()
+                        (approved_brief.strip() or "No additional confirmed product facts were provided.")
                         + "\n\nMETA OUTPUT LANGUAGE: "
                         + ai_lang_instruction()
                     )
                     with st.spinner(t["analysing_fit"]):
                         explanation = explain_creator_fit(
                             ranked,
-                            campaign_id.strip(),
+                            campaign_id,
                             product.strip(),
                             objective,
                             brief_for_agent,
+                            dataset_profile=profile,
+                            full_dataset=creator_df,
                         )
                     st.session_state.marketing_result = {
                         "ranked": ranked.head(10),
                         "explanation": explanation,
-                        "campaign_id": campaign_id.strip(),
+                        "campaign_id": campaign_id,
+                        "profile": profile,
                     }
-                    save_history("Marketing", campaign_id[:80], f"{len(creator_df)} creators")
+                    save_history("Marketing", product[:80], f"{len(creator_df)} creators | fit={profile.get('fit_level')}")
 
     result = st.session_state.marketing_result
     if result:
-        st.markdown(f"### {t['shortlist']}")
-        st.dataframe(result["ranked"], use_container_width=True, hide_index=True)
-        st.markdown(f"### {t['fit_analysis']}")
+        ranked = result.get("ranked")
+        if ranked is not None and not ranked.empty:
+            st.markdown(f"### {t['shortlist']}")
+            show_cols = [
+                c for c in ["display_name", "platform", "category", "followers", "avg_views", "engagement_rate", "gmv_30d", "fee_brl", "fit_score", "score_data_coverage", "profile_url"]
+                if c in ranked.columns
+            ]
+            st.dataframe(ranked[show_cols] if show_cols else ranked, use_container_width=True, hide_index=True)
+        else:
+            st.info(ui["no_shortlist"])
+
+        st.markdown(f"### {ui['analysis']}")
         st.markdown(result.get("explanation") or "")
         download_markdown(
             t["download_creator_analysis"],
