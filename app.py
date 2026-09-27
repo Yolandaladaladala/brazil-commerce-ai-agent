@@ -9,6 +9,7 @@ import streamlit as st
 
 from agent import route_request
 from tools.market import run_market_research
+from tools.report_generator import generate_market_docx, generate_market_pdf
 from tools.operations import run_operations
 from tools.marketing import load_creator_file, score_creators, explain_creator_fit
 from tools.finance import load_finance_file, analyse_finance
@@ -1299,14 +1300,82 @@ elif module == "market":
             unsafe_allow_html=True,
         )
 
+        # Full consulting-style report body
         st.markdown(result.get("analysis") or "")
 
-        download_markdown(
-            mu["download"],
-            result.get("analysis") or "",
-            f"market_research_{last_q.get('country', 'market')}_{last_q.get('product', 'product').replace(' ', '_')[:40]}.md",
-            "download_market_memo",
+        # Evidence-backed visualisations. The Market tool returns charts only
+        # when comparable numeric values are supported by retrieved evidence.
+        charts = result.get("charts") or []
+        if charts:
+            chart_heading = {
+                "zh": "数据可视化",
+                "en": "Evidence-backed visualisations",
+                "pt-BR": "Visualizações baseadas em evidências",
+            }[lang_code]
+            st.markdown(f"### {chart_heading}")
+            for idx, chart in enumerate(charts):
+                values = chart.get("values") or []
+                labels = chart.get("labels") or []
+                if len(values) >= 2 and len(values) == len(labels):
+                    chart_df = pd.DataFrame({
+                        "label": labels,
+                        "value": values,
+                    }).set_index("label")
+                    st.markdown(f"**{chart.get('title', 'Chart')}**")
+                    if chart.get("type") == "line":
+                        st.line_chart(chart_df)
+                    else:
+                        st.bar_chart(chart_df)
+                    note_parts = []
+                    if chart.get("unit"):
+                        note_parts.append(str(chart.get("unit")))
+                    if chart.get("source_ids"):
+                        note_parts.append("Sources: " + ", ".join(chart.get("source_ids")))
+                    if chart.get("note"):
+                        note_parts.append(str(chart.get("note")))
+                    if note_parts:
+                        st.caption(" · ".join(note_parts))
+
+        # Real deliverables: editable Word + presentation-ready PDF.
+        dl_labels = {
+            "zh": ("下载 Word 报告", "下载 PDF 报告", "下载 Markdown"),
+            "en": ("Download Word report", "Download PDF report", "Download Markdown"),
+            "pt-BR": ("Baixar relatório Word", "Baixar relatório PDF", "Baixar Markdown"),
+        }[lang_code]
+        filename_base = (
+            f"market_research_{last_q.get('country', 'market')}_"
+            f"{last_q.get('product', 'product').replace(' ', '_')[:40]}"
         )
+        try:
+            docx_bytes = generate_market_docx(result, lang_code)
+            pdf_bytes = generate_market_pdf(result, lang_code)
+            d1, d2, d3 = st.columns(3)
+            d1.download_button(
+                dl_labels[0],
+                data=docx_bytes,
+                file_name=filename_base + ".docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                key="download_market_docx",
+                use_container_width=True,
+            )
+            d2.download_button(
+                dl_labels[1],
+                data=pdf_bytes,
+                file_name=filename_base + ".pdf",
+                mime="application/pdf",
+                key="download_market_pdf",
+                use_container_width=True,
+            )
+            d3.download_button(
+                dl_labels[2],
+                data=(result.get("analysis") or "").encode("utf-8"),
+                file_name=filename_base + ".md",
+                mime="text/markdown",
+                key="download_market_md",
+                use_container_width=True,
+            )
+        except Exception as e:
+            st.warning(f"Report export unavailable: {e}")
 
         with st.expander(mu["sources"], expanded=False):
             st.caption(mu["sources_sub"])
@@ -1621,4 +1690,3 @@ elif module == "audit":
             st.session_state.history = []
             st.success(t["history_cleared"])
             st.rerun()
-
