@@ -4,7 +4,7 @@ from typing import Optional
 from config import LLM_API_URL, LLM_API_KEY, LLM_MODEL, DEMO_MODE
 
 SYSTEM = """You are the Brazil Commerce OS business copilot.
-Be operational, concise, source-aware, and explicit about uncertainty.
+Be analytical, operational, source-aware, and explicit about uncertainty.
 
 Rules:
 - Never invent creator identities.
@@ -14,6 +14,7 @@ Rules:
 - Distinguish verified/observed/user-provided/estimated/inferred information.
 - For high-impact actions (contracts, publishing, payments, compliance), require human approval.
 """
+
 
 def demo_answer(prompt: str) -> str:
     p = prompt.lower()
@@ -43,7 +44,19 @@ def demo_answer(prompt: str) -> str:
         "再说明需要哪些输入、哪些信息缺失、下一步应该调用什么工具。"
     )
 
-def chat(prompt: str, system: Optional[str] = None) -> str:
+
+def chat(
+    prompt: str,
+    system: Optional[str] = None,
+    *,
+    max_tokens: int = 1200,
+    temperature: float = 0.2,
+) -> str:
+    """OpenAI-compatible chat call with per-task output controls.
+
+    Market Research V2 uses a larger max_tokens value so the report is not
+    artificially capped at a short memo. Other modules can keep smaller limits.
+    """
     if DEMO_MODE:
         return demo_answer(prompt)
 
@@ -57,10 +70,10 @@ def chat(prompt: str, system: Optional[str] = None) -> str:
             {"role": "system", "content": system or SYSTEM},
             {"role": "user", "content": prompt},
         ],
-        "temperature": 0.2,
-        "max_tokens": 1200,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
     }
-    r = requests.post(LLM_API_URL, headers=headers, json=payload, timeout=60)
+    r = requests.post(LLM_API_URL, headers=headers, json=payload, timeout=180)
     r.raise_for_status()
     data = r.json()
     return data["choices"][0]["message"]["content"]
